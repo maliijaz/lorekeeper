@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lorekeeper</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Lora:ital,wght@0,400;0,600;1,400&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/styles.css">
+<link rel="icon" href="/static/icon.png">
+</head>
+<body>
+
+<!-- ============================== LIBRARY ============================== -->
+<section id="library" class="view">
+  <header class="lib-header">
+    <div class="brand"><img class="logo-img" src="/static/icon.png" alt=""> Lorekeeper</div>
+    <div class="lib-actions">
+      <span id="health" class="health"></span>
+      <button class="btn ghost" id="openSettings" title="Model settings">&#9881; Models</button>
+      <label class="btn primary">
+        + Add book
+        <input type="file" id="fileInput" hidden
+               accept=".epub,.pdf,.mobi,.azw,.azw3,.fb2,.docx,.html,.htm,.xhtml,.txt,.md,.rtf">
+      </label>
+    </div>
+  </header>
+  <main class="lib-main">
+    <div id="setupBanner" class="banner" hidden></div>
+    <div id="dropzone" class="dropzone">
+      Drop an e-book here &mdash; EPUB, PDF, MOBI, AZW3, FB2, DOCX, HTML, TXT, RTF
+    </div>
+    <div id="bookGrid" class="book-grid"></div>
+    <p id="emptyLib" class="muted center" hidden>Your library is empty. Add a fantasy or sci-fi novel to begin.</p>
+  </main>
+</section>
+
+<!-- ============================== READER ============================== -->
+<section id="reader" class="view" hidden>
+  <header class="topbar">
+    <button class="icon-btn" id="backBtn" title="Library">&larr;</button>
+    <div class="titles">
+      <div id="bookTitle" class="book-title"></div>
+      <select id="chapterSelect" class="chapter-select" title="Chapters"></select>
+    </div>
+    <div class="top-actions">
+      <button class="icon-btn" id="typoBtn" title="Text & display">Aa</button>
+      <button class="icon-btn" id="codexBtn" title="Codex">&#x1F4DC;</button>
+    </div>
+  </header>
+  <div class="read-progress"><div id="readProgress"></div></div>
+
+  <div class="reader-body">
+    <div class="page-wrap" id="pageWrap" tabindex="-1">
+      <article id="page" class="page"></article>
+    </div>
+    <aside id="codex" class="codex" hidden>
+      <div class="codex-head">
+        <div class="tabs">
+          <button class="tab active" data-tab="entries">Codex</button>
+          <button class="tab" data-tab="ask">Ask the book</button>
+        </div>
+        <button class="icon-btn small" id="closeCodex" title="Close">&times;</button>
+      </div>
+      <div class="shield" id="shield">
+        <label class="switch"><input type="checkbox" id="spoilerToggle" checked><span></span></label>
+        <div class="shield-text">
+          <strong>Spoiler shield</strong>
+          <span id="shieldInfo" class="muted"></span>
+        </div>
+        <button class="btn tiny ghost" id="editUpto">Set page</button>
+      </div>
+      <div id="procInfo" class="proc-info" hidden></div>
+
+      <div id="tab-entries" class="tab-panel">
+        <div id="listView">
+          <input id="codexSearch" class="input" placeholder="Search characters, places, lore&hellip;">
+          <div id="typeChips" class="chips"></div>
+          <div id="entityList" class="entity-list"></div>
+        </div>
+        <div id="detailView" hidden>
+          <button class="btn tiny ghost" id="detailBack">&larr; All entries</button>
+          <div id="detail"></div>
+        </div>
+      </div>
+
+      <div id="tab-ask" class="tab-panel" hidden>
+        <p class="muted small">Answers use only the pages you've read (when the shield is on).</p>
+        <div id="chat" class="chat"></div>
+        <form id="askForm" class="ask-form">
+          <input id="askInput" class="input" placeholder="Who is the Tin Woodman? Why does&hellip;" autocomplete="off">
+          <button class="btn primary" type="submit">Ask</button>
+        </form>
+      </div>
+    </aside>
+  </div>
+
+  <footer class="bottombar">
+    <button class="icon-btn" id="prevBtn" title="Previous chapter">&lsaquo;</button>
+    <input type="range" id="pageSlider" min="1" value="1">
+    <span id="pageLabel" class="page-label"></span>
+    <button class="icon-btn" id="nextBtn" title="Next chapter">&rsaquo;</button>
+  </footer>
+
+  <div id="typoPanel" class="popover" hidden>
+    <div class="field"><label>Theme</label>
+      <div class="seg" id="themeSeg">
+        <button data-v="light">Light</button><button data-v="sepia">Sepia</button>
+        <button data-v="dark">Dark</button><button data-v="night">Night</button>
+      </div>
+    </div>
+    <div class="field"><label>Font</label>
+      <select id="fontSel" class="input">
+        <option value="'Literata', Georgia, serif">Literata</option>
+        <option value="'Merriweather', Georgia, serif">Merriweather</option>
+        <option value="'Lora', Georgia, serif">Lora</option>
+        <option value="'EB Garamond', Garamond, serif">EB Garamond</option>
+        <option value="Georgia, serif">Georgia</option>
+        <option value="'Inter', system-ui, sans-serif">Inter (sans)</option>
+        <option value="'Atkinson Hyperlegible', sans-serif">Atkinson Hyperlegible</option>
+        <option value="system-ui, sans-serif">System</option>
+      </select>
+    </div>
+    <div class="field"><label>Size <span id="sizeVal"></span></label><input type="range" id="sizeRng" min="13" max="32" step="1"></div>
+    <div class="field"><label>Line height <span id="lhVal"></span></label><input type="range" id="lhRng" min="1.2" max="2.4" step="0.05"></div>
+    <div class="field"><label>Page width <span id="widthVal"></span></label><input type="range" id="widthRng" min="30" max="60" step="1"></div>
+    <div class="field"><label>Paragraph spacing <span id="paraVal"></span></label><input type="range" id="paraRng" min="0" max="2" step="0.1"></div>
+    <div class="field"><label>Letter spacing <span id="lsVal"></span></label><input type="range" id="lsRng" min="-0.02" max="0.12" step="0.01"></div>
+    <div class="field row"><label>Justify</label><label class="switch"><input type="checkbox" id="justifyChk"><span></span></label></div>
+    <div class="field row"><label>Indent paragraphs</label><label class="switch"><input type="checkbox" id="indentChk"><span></span></label></div>
+    <div class="field row"><label>Page numbers in margin</label><label class="switch"><input type="checkbox" id="pageNumChk"><span></span></label></div>
+    <div class="field row"><label>Underline codex names</label><label class="switch"><input type="checkbox" id="hlChk"><span></span></label></div>
+    <button class="btn tiny ghost" id="typoReset">Reset to defaults</button>
+  </div>
+</section>
+
+<!-- ============================== SETTINGS ============================== -->
+<dialog id="settingsDlg" class="dialog">
+  <form method="dialog" id="settingsForm">
+    <h2>Models</h2>
+    <p class="muted small">Only open-weight models are used. Local Ollama runs on your GPU; OpenAI-compatible
+      endpoints (Groq, Hugging Face router, vLLM, llama.cpp) are much faster for long books.</p>
+    <div class="field"><label>Provider</label>
+      <div class="seg" id="providerSeg">
+        <button type="button" data-v="ollama">Ollama (local GPU)</button>
+        <button type="button" data-v="openai">Groq / OpenAI-compatible</button>
+      </div>
+    </div>
+    <div id="ollamaFields">
+      <div class="field"><label>Ollama URL</label><input class="input" name="ollama_url"></div>
+      <div class="field"><label>Model</label><input class="input" name="ollama_model" list="ollamaModels">
+        <datalist id="ollamaModels"></datalist></div>
+      <div class="field"><label>Context window</label><input class="input" type="number" name="ollama_num_ctx"></div>
+    </div>
+    <div id="openaiFields">
+      <div class="field"><label>Base URL</label><input class="input" name="openai_base_url"></div>
+      <div class="field"><label>API key</label><input class="input" type="password" name="openai_api_key"></div>
+      <div class="field"><label>Model</label><input class="input" name="openai_model" list="openaiModels">
+        <datalist id="openaiModels">
+          <option value="openai/gpt-oss-120b"><option value="llama-3.3-70b-versatile">
+          <option value="qwen/qwen3-32b"><option value="moonshotai/kimi-k2-instruct">
+        </datalist></div>
+    </div>
+    <div class="field"><label>Embedding model (search, GPU)</label><input class="input" name="embed_model"></div>
+    <div id="settingsHealth" class="muted small"></div>
+    <div class="dlg-actions">
+      <button class="btn ghost" value="cancel">Close</button>
+      <button class="btn primary" id="saveSettings" type="button">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="toast" class="toast" hidden></div>
+<script src="/static/app.js"></script>
+</body>
+</html>

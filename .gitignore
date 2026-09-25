@@ -1,0 +1,21 @@
+# Your library, books and settings (may contain copyrighted books and API keys)
+data/
+
+# Build output (the installer is published as a GitHub release asset)
+dist/
+
+# Test books
+samples/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+venv/
+.venv/
+
+# Editors / OS
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
