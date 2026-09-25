@@ -145,3 +145,8 @@ extraction calls. It is useful after improving entity resolution. The book must 
   came from, but its wording can draw on the neighbouring 2–3 pages.
 - **Small local models:** they sometimes pick the wrong type (for example, "creature" for a
   character) or attach a wrong alias. A larger model or Groq reduces this.
+
+## License
+
+[MIT](LICENSE) © 2026 Muhammad Ali Ijaz. The AI models, Ollama and the other dependencies keep their
+own licenses. Only read books you have the right to use.
